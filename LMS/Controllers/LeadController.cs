@@ -27,7 +27,7 @@ namespace LMS.Controllers
         [HttpGet]
         public string Get()
         {
-            string sql = "select ROW_NUMBER() OVER(ORDER BY (SELECT 1)) as sl,l.*,p.ProductName,a.FirstName as Agent from Leads l inner join Products p on p.ProductId=l.ProductIdinner join Agents a on a.AgentId = l.AssignedAgentId";
+            string sql = "select ROW_NUMBER() OVER(ORDER BY (SELECT 1)) as sl,l.*,p.ProductName,a.FirstName as Agent from Leads l inner join Products p on p.ProductId=l.ProductId join Agents a on a.AgentId = l.AssignedAgentId";
             DataTable dt = da.GetDataTableByCommand(sql);
             return JsonConvert.SerializeObject(dt);
         }
@@ -36,7 +36,7 @@ namespace LMS.Controllers
         [HttpGet("{LeadId}")]
         public string Get(int LeadId)
         {
-            string sql = "select ROW_NUMBER() OVER(ORDER BY (SELECT 1)) as sl,l.*,p.ProductName,a.FirstName as Agent from Leads l inner join Products p on p.ProductId=l.ProductIdinner join Agents a on a.AgentId = l.AssignedAgentId where LeadId='" + LeadId + "'";
+            string sql = "select ROW_NUMBER() OVER(ORDER BY (SELECT 1)) as sl,l.*,p.ProductName,a.FirstName as Agent from Leads l inner join Products p on p.ProductId=l.ProductId join Agents a on a.AgentId = l.AssignedAgentId where LeadId='" + LeadId + "'";
             DataTable dt = da.GetDataTableByCommand(sql);
             return JsonConvert.SerializeObject(dt);
         }
