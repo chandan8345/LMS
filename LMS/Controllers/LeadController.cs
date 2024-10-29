@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using LMS.Services;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,28 +22,52 @@ namespace LMS.Controllers
     [ApiController]
     public class LeadController : ControllerBase
     {
+        HttpResponseMessage response = new HttpResponseMessage();
         data_access da = new data_access();
 
         //GET: api/<LeadController>
         [HttpGet]
-        public string Get()
+        public HttpResponseMessage Get()
         {
             string sql = "select ROW_NUMBER() OVER(ORDER BY (SELECT 1)) as sl,l.*,p.ProductName,a.FirstName as Agent from Leads l inner join Products p on p.ProductId=l.ProductId join Agents a on a.AgentId = l.AssignedAgentId";
             DataTable dt = da.GetDataTableByCommand(sql);
-            return JsonConvert.SerializeObject(dt);
+            if (dt.Rows.Count > 0)
+            {
+                response = new HttpResponseMessage(HttpStatusCode.OK);//200
+                response.Content = new StringContent(JsonConvert.SerializeObject(dt), Encoding.UTF8, "application/json");
+                return response;
+            }
+            else {
+                response = new HttpResponseMessage(HttpStatusCode.NotFound);//404
+                var error = new { Code = 500, Message = "Something went wrong!" };
+                response.Content = new StringContent(JsonConvert.SerializeObject(error), Encoding.UTF8, "application/json");
+                return response;
+            }
         }
 
         // GET api/<LeadController>/5
         [HttpGet("{LeadId}")]
-        public string Get(int LeadId)
+        public HttpResponseMessage Get(int LeadId)
         {
             string sql = "select ROW_NUMBER() OVER(ORDER BY (SELECT 1)) as sl,l.*,p.ProductName,a.FirstName as Agent from Leads l inner join Products p on p.ProductId=l.ProductId join Agents a on a.AgentId = l.AssignedAgentId where LeadId='" + LeadId + "'";
             DataTable dt = da.GetDataTableByCommand(sql);
-            return JsonConvert.SerializeObject(dt);
+            if (dt.Rows.Count > 0)
+            {
+                response = new HttpResponseMessage(HttpStatusCode.OK);//200
+                response.Content = new StringContent(JsonConvert.SerializeObject(dt), Encoding.UTF8, "application/json");
+                return response;
+            }
+            else
+            {
+                response = new HttpResponseMessage(HttpStatusCode.NotFound);//404
+                var error = new { Code = 500, Message = "Something went wrong!" };
+                response.Content = new StringContent(JsonConvert.SerializeObject(error), Encoding.UTF8, "application/json");
+                return response;
+            }
         }
 
         [HttpPost]
-        public string Post([FromBody] Lead lead)
+        public HttpResponseMessage Post([FromBody] Lead lead)
         {
             Hashtable ht = new Hashtable();
             ht.Add("FirstName", lead.FirstName);
@@ -54,21 +79,45 @@ namespace LMS.Controllers
             ht.Add("Source", lead.Source);
             ht.Add("Status", lead.Status);
             DataTable dt = da.ExecuteStoredProcedure("lead_insert", ht);
-            return JsonConvert.SerializeObject(dt);
+            if (dt.Rows.Count > 0)
+            {
+                response = new HttpResponseMessage(HttpStatusCode.OK);//200
+                response.Content = new StringContent(JsonConvert.SerializeObject(dt), Encoding.UTF8, "application/json");
+                return response;
+            }
+            else
+            {
+                response = new HttpResponseMessage(HttpStatusCode.NotFound);//404
+                var error = new { Code = 500, Message = "Something went wrong!" };
+                response.Content = new StringContent(JsonConvert.SerializeObject(error), Encoding.UTF8, "application/json");
+                return response;
+            }
         }
 
         [HttpDelete("{LeadId}")]
-        public string Delete(int LeadId)
+        public HttpResponseMessage Delete(int LeadId)
         {
             string sql = "delete from Leads where LeadId='" + LeadId + "'";
             da.ExecuteScalar(sql);
             DataTable dt = null;
-            return JsonConvert.SerializeObject(dt);
+            if (dt.Rows.Count > 0)
+            {
+                response = new HttpResponseMessage(HttpStatusCode.OK);//200
+                response.Content = new StringContent(JsonConvert.SerializeObject(dt), Encoding.UTF8, "application/json");
+                return response;
+            }
+            else
+            {
+                response = new HttpResponseMessage(HttpStatusCode.NotFound);//404
+                var error = new { Code = 500, Message = "Something went wrong!" };
+                response.Content = new StringContent(JsonConvert.SerializeObject(error), Encoding.UTF8, "application/json");
+                return response;
+            }
         }
 
         // PUT api/<apiController>/5
         [HttpPut("{LeadId}")]
-        public string Put(int LeadId, [FromBody] Lead lead)
+        public HttpResponseMessage Put(int LeadId, [FromBody] Lead lead)
         {
             Hashtable ht = new Hashtable();
             ht.Add("LeadId", LeadId);
@@ -81,7 +130,19 @@ namespace LMS.Controllers
             ht.Add("Source", lead.Source);
             ht.Add("Status", lead.Status);
             DataTable dt = da.ExecuteStoredProcedure("lead_update", ht);
-            return JsonConvert.SerializeObject(dt);
+            if (dt.Rows.Count > 0)
+            {
+                response = new HttpResponseMessage(HttpStatusCode.OK);//200
+                response.Content = new StringContent(JsonConvert.SerializeObject(dt), Encoding.UTF8, "application/json");
+                return response;
+            }
+            else
+            {
+                response = new HttpResponseMessage(HttpStatusCode.NotFound);//404
+                var error = new { Code = 500, Message = "Something went wrong!" };
+                response.Content = new StringContent(JsonConvert.SerializeObject(error), Encoding.UTF8, "application/json");
+                return response;
+            }
         }
     }
 }
