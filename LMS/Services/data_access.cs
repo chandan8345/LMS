@@ -15,6 +15,7 @@ namespace LMS.Services
         {
             private SqlTransaction Trans;
             public SqlConnection AppConn = new SqlConnection("Data Source=sql.bsite.net\\MSSQL2016;Database=chandancse_;User Id=chandancse_;Password=Alil@321;");
+            //public SqlConnection AppConn = new SqlConnection("Data Source=db9519.databaseasp.net;Database=db9519;User Id=db9519;Password=Alil@321;");
             private SqlCommand Cmnd;
 
             public DataTable ExecuteStoredProcedure(string storedProcedureName, Hashtable parameters)
