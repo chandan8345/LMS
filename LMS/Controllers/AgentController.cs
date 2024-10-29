@@ -30,10 +30,10 @@ namespace LMS.Controllers
         }
 
         // GET api/<LeadController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{AgentId}")]
+        public string Get(int AgentId)
         {
-            string sql = "select * from Agents where AgentId='" + id + "'";
+            string sql = "select * from Agents where AgentId='" + AgentId + "'";
             DataTable dt = da.GetDataTableByCommand(sql);
             return JsonConvert.SerializeObject(dt);
         }
@@ -51,21 +51,21 @@ namespace LMS.Controllers
             return JsonConvert.SerializeObject(dt);
         }
 
-        [HttpDelete("{id}")]
-        public string Delete(int id)
+        [HttpDelete("{AgentId}")]
+        public string Delete(int AgentId)
         {
-            string sql = "delete from Agents where AgentId='" + id + "'";
+            string sql = "delete from Agents where AgentId='" + AgentId + "'";
             da.ExecuteScalar(sql);
             DataTable dt = null;
             return JsonConvert.SerializeObject(dt);
         }
 
         // PUT api/<apiController>/5
-        [HttpPut("{id}")]
-        public string Put(int id, [FromBody] Agent agent)
+        [HttpPut("{AgentId}")]
+        public string Put(int AgentId, [FromBody] Agent agent)
         {
             Hashtable ht = new Hashtable();
-            ht.Add("AgentId", id);
+            ht.Add("AgentId", AgentId);
             ht.Add("FirstName", agent.FirstName);
             ht.Add("LastName", agent.LastName);
             ht.Add("Email", agent.Email);
